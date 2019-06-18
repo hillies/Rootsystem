@@ -1,0 +1,10 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+######################################################################
+# 
+#   Run this file to update and create maxmind ipsets listed below
+#  
+######################################################################
+
+./maxmind_run 953987 ZA

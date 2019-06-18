@@ -1,0 +1,56 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+##################################################################################
+#
+#                   EXTERNAL DNS RESOLVE TO IP
+#
+##################################################################################
+
+
+### VARIABLES
+# -----------
+external_interface="bond0.3650"
+chain="DNSRESOLVE"
+dports=""
+sports=""
+ADDRS="co.za cars.co.za"
+
+### FLUSH CHAIN
+# -------------
+iptables -F $chain
+
+for ADDR in $ADDRS
+do
+    ### CHECK CHAIN
+    # -------------
+    CHECK_1=$(dig +short $ADDR | tail -n 1 | wc -l)
+    if [ $CHECK_1 -eq 1 ]
+    then
+	### GET IP
+	# --------
+        IP=$(dig +short $ADDR | tail -n 1)
+
+	### CHECK PORTS and APPLY RULES
+	# -----------------------------
+	var1=$(wc -w <<<$dports)
+	var2=$(wc -w <<<$sports)
+	if [ $var1 -gt 0 ]
+	then
+        	iptables -A $chain -d $IP -m multiport -p tcp --dport $dports -j ACCEPT
+        	#iptables -A $chain -s $IP -m multiport -p tcp --sport $sports -j ACCEPT
+	else
+        	iptables -A $chain -d $IP -j ACCEPT
+        	#iptables -A $chain -s $IP -j ACCEPT
+	fi
+	if [ $var2 -gt 0 ]
+	then
+        	iptables -A $chain -s $IP -m multiport -p tcp --sport $sports -j ACCEPT
+	else
+        	iptables -A $chain -s $IP -j ACCEPT
+	fi
+    elif [ $CHECK_1 -eq 0 ]
+    then
+        echo "DNS lookup error for $LOOK"
+    fi
+done

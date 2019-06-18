@@ -1,0 +1,89 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+
+##################################################################################
+#
+#                   MAXMIND - CREATE and UPDATE GEOIP LIST
+#
+##################################################################################
+
+
+
+### VARIABLES
+# -----------
+LIST_URL="https://raw.githubusercontent.com/firehol/blocklist-ipsets/master/firehol_level3.netset"
+FILENAME=firehol_level3
+
+
+### DIRECTORIES
+# -------------
+TMPDIR="/tmp/$FILENAME"
+IPSETDIR="./ipsets"
+
+
+
+### TEMPDIR CHECK
+# ---------------
+if [ ! -d $TMPDIR ]
+then
+	mkdir $TMPDIR
+fi
+
+
+
+### DOWNLOAD and CREATE List, REMOVE temp directory
+# --------------------------------------------------
+wget -P $TMPDIR $LIST_URL
+LIST=$(cat $TMPDIR/* | sed '/^#/ d')
+rm -Rf $TMPDIR
+
+
+
+### IPSETDIR CHECK
+# ------------------
+if [ ! -d $IPSETDIR ]
+then
+	mkdir -p $IPSETDIR
+fi
+
+
+
+#### DELETE PREVIOUS IPSET FILE
+# -------------------------------
+if [ -f $IPSETDIR/$FILENAME ]
+then
+	rm -f $IPSETDIR/$FILENAME
+fi
+
+
+
+# CHECK1: CHECK IF LIST EXIST
+CHECK1=$(ipset list | grep $FILENAME | wc -m)
+if [ $CHECK1 -eq 0 ]
+then
+	echo "Creating IPSET $FILENAME!"
+	echo "Adding IP's in IPSET $FILENAME ....."
+	ipset create $FILENAME hash:net
+else
+	echo "IPSET $FILENAME already created!"
+	echo "Flushing IP's in IPSET $FILENAME ....."
+	echo "Adding IP's in IPSET $FILENAME ....."
+	ipset flush $FILENAME
+fi
+
+
+
+# ADD IP's to IPSET
+echo "#!/bin/bash" > $IPSETDIR/$FILENAME
+for ipset in $LIST
+do
+	echo "ipset add $FILENAME $ipset" >> $IPSETDIR/$FILENAME
+done
+
+
+
+### MAKE IPSET EXECUTABLE,RUN/UPDATE IPSET AND REMOVE TEMPDIR
+# --------------------------------------------------------------
+chmod +x $IPSETDIR/$FILENAME
+$IPSETDIR/$FILENAME

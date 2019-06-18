@@ -1,0 +1,53 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+
+##################################################################################
+#
+#                   MAXMIND - CREATE and UPDATE GEOIP LIST
+#
+##################################################################################
+
+
+
+### VARIABLES
+# -----------
+GEOLIST_URL="https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country-CSV.zip"
+
+
+
+### DIRECTORIES
+# -------------
+TMPDIR="/tmp/maxdocs"
+
+
+
+### FILENAME VARIABLES
+# --------------------
+FILENAMEX=$(echo $GEOLIST_URL | awk -F "/" '{print$7}')
+FILENAME=$(echo $FILENAMEX | awk -F "." '{print$1}')
+
+
+
+### TEMPDIR CHECK
+# ---------------
+if [ ! -d $TMPDIR ]
+then
+	mkdir $TMPDIR
+fi
+
+
+
+### DOWNLOAD & EXTRACT
+# --------------------
+wget -P $TMPDIR $GEOLIST_URL > /dev/null 2>&1
+unzip $TMPDIR/$FILENAMEX -d $TMPDIR > /dev/null 2>&1
+rm -rf $TMPDIR/$FILENAMEX                   # delete downloaded
+mv $TMPDIR/$FILENAME* $TMPDIR/$FILENAME     # rename folder
+cat $TMPDIR/$FILENAME/GeoLite2-Country-Locations-en.csv | awk -F "," '{print$1,$5,$6}' | grep "$1"
+
+
+
+### REMOVE TEMPDIR
+# ----------------
+rm -rf $TMPDIR

@@ -1,0 +1,104 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+
+##################################################################################
+#
+#                   MAXMIND - CREATE and UPDATE GEOIP LIST
+#
+##################################################################################
+
+
+
+### VARIABLES
+# -----------
+GEOLIST_URL="https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country-CSV.zip"
+GEOCODE="$1"
+COUNTRYCODE="$2"
+
+
+
+### DIRECTORIES
+# -------------
+TMPDIR="/tmp/maxmind"
+IPSETDIR="./ipsets"
+
+
+
+### FILENAME VARIABLES
+# --------------------
+FILENAMEX=$(echo $GEOLIST_URL | awk -F "/" '{print$7}')
+FILENAME=$(echo $FILENAMEX | awk -F "." '{print$1}')
+
+
+
+### TEMPDIR CHECK
+# ---------------
+if [ ! -d $TMPDIR ]
+then
+	mkdir $TMPDIR
+fi
+
+
+
+### DOWNLOAD & EXTRACT
+# --------------------
+wget -P $TMPDIR $GEOLIST_URL
+unzip $TMPDIR/$FILENAMEX -d $TMPDIR
+rm -rf $TMPDIR/$FILENAMEX                   # delete downloaded
+mv $TMPDIR/$FILENAME* $TMPDIR/$FILENAME     # rename folder
+
+
+
+### IPSETDIR CHECK
+# ------------------
+if [ ! -d $IPSETDIR ]
+then
+	mkdir -p $IPSETDIR
+fi
+
+
+
+#### DELETE PREVIOUS IPSET FILE
+# -------------------------------
+if [ -f $IPSETDIR/$COUNTRYCODE ]
+then
+	rm -f $IPSETDIR/$COUNTRYCODE
+fi
+
+
+
+### CREATE IPSET
+# --------------
+cat $TMPDIR/GeoLite2-Country-CSV/GeoLite2-Country-Blocks-IPv4.csv | grep $GEOCODE | awk -F "," '{print$1}' >> $TMPDIR/$COUNTRYCODE
+TEMP_FILE="$TMPDIR/$COUNTRYCODE"
+FILTERED_FILE=$(cat $TEMP_FILE)
+
+# CHECK1: CHECK IF LIST EXIST
+CHECK1=$(ipset list | grep $COUNTRYCODE | wc -m)
+if [ $CHECK1 -eq 0 ]
+then
+	echo "Creating IPSET $COUNTRYCODE!"
+	echo "Adding IP's in IPSET $COUNTRYCODE ....."
+	ipset create $COUNTRYCODE hash:net
+else
+	echo "IPSET $COUNTRYCODE already created!"
+	echo "Flushing IP's in IPSET $COUNTRYCODE ....."
+	echo "Adding IP's in IPSET $COUNTRYCODE ....."
+	ipset flush $COUNTRYCODE
+fi
+
+# ADD IP's to IPSET
+echo "#!/bin/bash" > $IPSETDIR/$COUNTRYCODE
+for ipset in $FILTERED_FILE
+do
+	echo "ipset add $COUNTRYCODE $ipset" >> $IPSETDIR/$COUNTRYCODE
+done
+
+
+
+### MAKE IPSET EXECUTABLE,RUN/UPDATE IPSET AND REMOVE TEMPDIR
+# ------------------------------------------
+chmod +x $IPSETDIR/$COUNTRYCODE
+$IPSETDIR/$COUNTRYCODE
+rm -rf $TMPDIR

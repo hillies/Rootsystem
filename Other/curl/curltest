@@ -1,0 +1,142 @@
+#!/bin/bash
+
+st1=pluspharmacy.co.za
+st2=dev.pluspharmacy.co.za
+st3=devftp.healthwindow.co.za
+st4=pluspharmacy.co.za
+st5=www.pluspharmacy.co.za
+st6=manage.pluspharmacy.co.za
+st7=pharmacy-adherence-software.com
+st8=www.pharmacy-adherence-software.com
+st9=test.pharmacy-adherence-software.com
+st10=www.manage.pluspharmacy.co.za
+st11=www.dev.pluspharmacy.co.za
+st12=www.rootsystem.co.za
+st13=www.facebook.com
+st14=www.takealot.com
+
+echo
+echo ------------------------------------------------------------
+echo $st1
+echo ------------------------------------------------------------
+echo https://$st1
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st1
+echo http://$st1
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st1
+
+echo
+echo ------------------------------------------------------------
+echo $st2
+echo ------------------------------------------------------------
+echo https://$st2
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st2
+echo http://$st2
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st2
+
+echo
+echo ------------------------------------------------------------
+echo $st3
+echo ------------------------------------------------------------
+echo https://$st3
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st3
+echo http://$st3
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st3
+
+echo
+echo ------------------------------------------------------------
+echo $st4
+echo ------------------------------------------------------------
+echo https://$st4
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st4
+echo http://$st4
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st4
+
+echo
+echo ------------------------------------------------------------
+echo $st5
+echo ------------------------------------------------------------
+echo https://$st5
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st5
+echo http://$st5
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st5
+
+echo
+echo ------------------------------------------------------------
+echo $st6
+echo ------------------------------------------------------------
+echo https://$st6
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st6
+echo http://$st6
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st6
+
+echo
+echo ------------------------------------------------------------
+echo $st7
+echo ------------------------------------------------------------
+echo https://$st7
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st7
+echo http://$st7
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st7
+
+echo
+echo ------------------------------------------------------------
+echo $st8
+echo ------------------------------------------------------------
+echo https://$st8
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st8
+echo http://$st8
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st8
+
+echo
+echo ------------------------------------------------------------
+echo $st9
+echo ------------------------------------------------------------
+echo https://$st9
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st9
+echo http://$st9
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st9
+
+echo
+echo ------------------------------------------------------------
+echo $st10
+echo ------------------------------------------------------------
+echo https://$st10
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st10
+echo http://$st10
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st10
+
+echo
+echo ------------------------------------------------------------
+echo $st11
+echo ------------------------------------------------------------
+echo https://$st11
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st11
+echo http://$st11
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st11
+
+echo
+echo ------------------------------------------------------------
+echo $st12
+echo ------------------------------------------------------------
+echo https://$st12
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st12
+echo http://$st12
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st12
+
+echo
+echo ------------------------------------------------------------
+echo $st13
+echo ------------------------------------------------------------
+echo https://$st13
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st13
+echo http://$st13
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st13
+
+echo
+echo ------------------------------------------------------------
+echo $st14
+echo ------------------------------------------------------------
+echo https://$st14
+curl -w "@curl-timing.cfg" -o /dev/null -s https://$st14
+echo http://$st14
+curl -w "@curl-timing.cfg" -o /dev/null -s http://$st14

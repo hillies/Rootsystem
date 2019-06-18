@@ -1,0 +1,66 @@
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+
+
+###############################
+# -----------------------------
+#	Updated 18 June 2019
+#	Quintin Hills
+#	V.1
+# -----------------------------
+###############################
+# Note: Create and Update custom IPset
+# Requires ipcalc
+
+
+
+### DIRECTORIES
+# -------------
+MAINDIR="/mnt/qrs_1gb_vol/Rootsystem/iptables/custom_ipsets"
+IPSETDIR="$MAINDIR/ipsets"
+LIST=blacklist
+TMPDIR="/tmp/$LIST"
+
+OP1=$1
+
+ipcalc -4cs $OP1 && ipvalid=yes || ipvalid=no
+
+if [ "$ipvalid" = no ]
+then
+	echo "ERROR01: Invalid IP/Network entered!"
+	exit 0
+fi
+
+### TEMPDIR CHECK
+# ---------------
+if [ ! -d $TMPDIR ]
+then
+	mkdir $TMPDIR
+fi
+
+### IPSETDIR CHECK
+# ------------------
+if [ ! -d $IPSETDIR ]
+then
+	mkdir -p $IPSETDIR
+fi
+
+### LIST CHECK
+# ------------------
+if [ ! -f $IPSETDIR/$LIST ]
+then
+    touch $IPSETDIR/$LIST
+	listnew=yes
+else
+	listnew=no
+fi
+
+if [ "$listnew" = "yes" ]
+then
+	echo "$OP1" >> $IPSETDIR/$LIST
+else
+	echo "$OP1" >> $IPSETDIR/$LIST
+	sed -i '/^$/d' $IPSETDIR/$LIST
+	cat $IPSETDIR/$LIST | sort -V -u -o $IPSETDIR/$LIST
+fi
